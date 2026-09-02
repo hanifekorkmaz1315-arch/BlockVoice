@@ -2,67 +2,490 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>BlockVoice</title>
+
 <style>
-body{margin:0;background:#101318;color:white;font-family:Arial;text-align:center}
-.box{max-width:500px;margin:auto;padding:25px}
-input,button{width:100%;padding:15px;margin:8px 0;border:0;border-radius:12px;font-size:18px}
-input{background:#252b34;color:white}
-button{background:#2196f3;color:white;font-weight:bold}
-#mic{background:#333}
-#status{margin:20px;color:#aaa}
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    background: #0b1020;
+    color: white;
+}
+
+.container {
+    width: 92%;
+    max-width: 430px;
+    background: #151c32;
+    padding: 30px 22px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 15px 45px rgba(0,0,0,.45);
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    color: #929db8;
+    margin-bottom: 28px;
+}
+
+/* ANA EKRAN */
+
+.home button {
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 17px;
+    margin-top: 10px;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.create {
+    background: #2878ff;
+}
+
+.join {
+    background: #303b59;
+}
+
+input {
+    width: 100%;
+    padding: 16px;
+    margin-top: 20px;
+    border: none;
+    outline: none;
+    border-radius: 14px;
+    background: #222b47;
+    color: white;
+    text-align: center;
+    font-size: 18px;
+}
+
+/* ODA */
+
+.room {
+    display: none;
+}
+
+.player-count {
+    font-size: 19px;
+    margin: 20px 0 25px;
+}
+
+.room-label {
+    color: #8d99b5;
+    margin-bottom: 8px;
+}
+
+/* KOD + KOPYALA */
+
+.code-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.code {
+    background: #222b47;
+    padding: 15px 18px;
+    border-radius: 14px;
+    font-size: 25px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    color: #65a0ff;
+}
+
+/* YUVARLAK KOPYALA BUTONU */
+
+.copy-button {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    border-radius: 50%;
+    border: none;
+    background: #2878ff;
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .2s;
+}
+
+.copy-button:active {
+    transform: scale(.88);
+}
+
+.copy-button.copied {
+    background: #18b66a;
+}
+
+/* MİKROFON */
+
+.mic {
+    width: 100%;
+    padding: 17px;
+    border: none;
+    border-radius: 14px;
+    background: #303b59;
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.mic.active {
+    background: #18b66a;
+}
+
+.status {
+    margin: 14px 0;
+    color: #8995b2;
+}
+
+.back {
+    margin-top: 15px;
+    border: none;
+    background: transparent;
+    color: #8995b2;
+    font-size: 15px;
+    cursor: pointer;
+}
 </style>
 </head>
+
 <body>
-<div class="box">
-<h1>🎙️ BlockVoice</h1>
-<h2>Oyuncularla Sesli Sohbet</h2>
 
-<input id="room" placeholder="Oda kodu">
+<div class="container">
 
-<button onclick="join()">🚪 Odaya Katıl</button>
+    <!-- ANA EKRAN -->
 
-<button id="mic" onclick="mic()" disabled>
-🔇 Mikrofon Kapalı
-</button>
+    <div id="home" class="home">
 
-<div id="status">Oda kodunu gir.</div>
+        <div class="logo">🎙️ BlockVoice</div>
 
-<div id="players">👥 Oyuncu: 0</div>
+        <div class="subtitle">
+            Oyuncularla Sesli Sohbet
+        </div>
+
+        <button class="create" onclick="createRoom()">
+            🏠 Oda Kur
+        </button>
+
+        <input
+            id="roomInput"
+            maxlength="6"
+            placeholder="Oda kodu"
+        >
+
+        <button class="join" onclick="joinRoom()">
+            🚪 Odaya Katıl
+        </button>
+
+        <div id="message" class="status"></div>
+
+    </div>
+
+
+    <!-- ODA EKRANI -->
+
+    <div id="room" class="room">
+
+        <div class="logo">🎙️ BlockVoice</div>
+
+        <div class="subtitle">
+            Sesli Sohbet Odası
+        </div>
+
+        <!-- OYUNCU SAYISI -->
+
+        <div class="player-count">
+            👥 Oyuncu: <b id="players">1</b>
+        </div>
+
+
+        <!-- ODA KODU -->
+
+        <div class="room-label">
+            🔑 Oda Kodu
+        </div>
+
+        <div class="code-row">
+
+            <div id="roomCode" class="code">
+                ------
+            </div>
+
+            <button
+                id="copyButton"
+                class="copy-button"
+                onclick="copyCode()"
+                title="Kopyala"
+            >
+                ⧉
+            </button>
+
+        </div>
+
+
+        <!-- MİKROFON -->
+
+        <button
+            id="micButton"
+            class="mic"
+            onclick="toggleMicrophone()"
+        >
+            🔇 Mikrofon Kapalı
+        </button>
+
+        <div id="micStatus" class="status">
+            Mikrofon kapalı
+        </div>
+
+
+        <!-- ÇIKIŞ -->
+
+        <button
+            class="back"
+            onclick="leaveRoom()"
+        >
+            ← Odadan Çık
+        </button>
+
+    </div>
+
 </div>
 
+
 <script>
-let stream=null;
-let open=false;
 
-async function join(){
-let r=document.getElementById("room").value.trim();
-if(!r)return alert("Oda kodu yaz!");
+let currentRoom = "";
+let microphone = false;
+let stream = null;
 
-try{
-stream=await navigator.mediaDevices.getUserMedia({audio:true});
-stream.getAudioTracks()[0].enabled=false;
-document.getElementById("mic").disabled=false;
-document.getElementById("status").textContent="🟢 Odaya katıldın: "+r;
-document.getElementById("players").textContent="👥 Oyuncu: 1";
-}catch(e){
-alert("Mikrofon izni verilmedi!");
+
+/* 6 HANELİ ODA KODU */
+
+function generateRoomCode() {
+
+    const characters =
+        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let code = "";
+
+    for (let i = 0; i < 6; i++) {
+
+        code += characters[
+            Math.floor(
+                Math.random() * characters.length
+            )
+        ];
+
+    }
+
+    return code;
 }
+
+
+/* ODA KUR */
+
+function createRoom() {
+
+    currentRoom = generateRoomCode();
+
+    document.getElementById("roomCode")
+        .textContent = currentRoom;
+
+    document.getElementById("players")
+        .textContent = "1";
+
+    document.getElementById("home")
+        .style.display = "none";
+
+    document.getElementById("room")
+        .style.display = "block";
 }
 
-function mic(){
-if(!stream)return;
-let t=stream.getAudioTracks()[0];
-t.enabled=!t.enabled;
-open=t.enabled;
 
-document.getElementById("mic").textContent=
-open?"🎙️ Mikrofon Açık":"🔇 Mikrofon Kapalı";
+/* ODAYA KATIL */
 
-document.getElementById("status").textContent=
-open?"🟢 Konuşabilirsin":"🔴 Mikrofon kapalı";
+function joinRoom() {
+
+    let code =
+        document.getElementById("roomInput")
+        .value
+        .trim()
+        .toUpperCase();
+
+    if (code.length !== 6) {
+
+        document.getElementById("message")
+            .textContent =
+            "⚠️ 6 karakterli kod gir.";
+
+        return;
+    }
+
+    currentRoom = code;
+
+    document.getElementById("roomCode")
+        .textContent = currentRoom;
+
+    document.getElementById("players")
+        .textContent = "1";
+
+    document.getElementById("home")
+        .style.display = "none";
+
+    document.getElementById("room")
+        .style.display = "block";
 }
+
+
+/* KODU KOPYALA */
+
+async function copyCode() {
+
+    try {
+
+        await navigator.clipboard
+            .writeText(currentRoom);
+
+        const button =
+            document.getElementById("copyButton");
+
+        button.textContent = "✓";
+        button.classList.add("copied");
+
+        setTimeout(() => {
+
+            button.textContent = "⧉";
+            button.classList.remove("copied");
+
+        }, 1500);
+
+    } catch (error) {
+
+        alert("Kod kopyalanamadı.");
+
+    }
+}
+
+
+/* MİKROFON */
+
+async function toggleMicrophone() {
+
+    const button =
+        document.getElementById("micButton");
+
+    const status =
+        document.getElementById("micStatus");
+
+
+    if (!microphone) {
+
+        try {
+
+            stream =
+                await navigator.mediaDevices
+                .getUserMedia({
+                    audio: true
+                });
+
+            microphone = true;
+
+            button.textContent =
+                "🎙️ Mikrofon Açık";
+
+            button.classList.add("active");
+
+            status.innerHTML =
+                "🟢 Konuşabilirsin";
+
+        }
+
+        catch (error) {
+
+            status.textContent =
+                "❌ Mikrofon izni verilmedi.";
+
+        }
+
+    }
+
+    else {
+
+        if (stream) {
+
+            stream.getTracks()
+                .forEach(track => track.stop());
+
+            stream = null;
+        }
+
+        microphone = false;
+
+        button.textContent =
+            "🔇 Mikrofon Kapalı";
+
+        button.classList.remove("active");
+
+        status.textContent =
+            "Mikrofon kapalı";
+    }
+}
+
+
+/* ODADAN ÇIK */
+
+function leaveRoom() {
+
+    if (stream) {
+
+        stream.getTracks()
+            .forEach(track => track.stop());
+
+        stream = null;
+    }
+
+    microphone = false;
+    currentRoom = "";
+
+    document.getElementById("room")
+        .style.display = "none";
+
+    document.getElementById("home")
+        .style.display = "block";
+
+    document.getElementById("roomInput")
+        .value = "";
+
+    document.getElementById("message")
+        .textContent = "";
+}
+
 </script>
+
 </body>
-</html>  
+</html>
