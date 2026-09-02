@@ -2,36 +2,67 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BlockVoice</title>
-
 <style>
-* {
-  box-sizing: border-box;
+body{margin:0;background:#101318;color:white;font-family:Arial;text-align:center}
+.box{max-width:500px;margin:auto;padding:25px}
+input,button{width:100%;padding:15px;margin:8px 0;border:0;border-radius:12px;font-size:18px}
+input{background:#252b34;color:white}
+button{background:#2196f3;color:white;font-weight:bold}
+#mic{background:#333}
+#status{margin:20px;color:#aaa}
+</style>
+</head>
+<body>
+<div class="box">
+<h1>🎙️ BlockVoice</h1>
+<h2>Oyuncularla Sesli Sohbet</h2>
+
+<input id="room" placeholder="Oda kodu">
+
+<button onclick="join()">🚪 Odaya Katıl</button>
+
+<button id="mic" onclick="mic()" disabled>
+🔇 Mikrofon Kapalı
+</button>
+
+<div id="status">Oda kodunu gir.</div>
+
+<div id="players">👥 Oyuncu: 0</div>
+</div>
+
+<script>
+let stream=null;
+let open=false;
+
+async function join(){
+let r=document.getElementById("room").value.trim();
+if(!r)return alert("Oda kodu yaz!");
+
+try{
+stream=await navigator.mediaDevices.getUserMedia({audio:true});
+stream.getAudioTracks()[0].enabled=false;
+document.getElementById("mic").disabled=false;
+document.getElementById("status").textContent="🟢 Odaya katıldın: "+r;
+document.getElementById("players").textContent="👥 Oyuncu: 1";
+}catch(e){
+alert("Mikrofon izni verilmedi!");
+}
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: #101318;
-  color: white;
-  font-family: Arial, sans-serif;
-}
+function mic(){
+if(!stream)return;
+let t=stream.getAudioTracks()[0];
+t.enabled=!t.enabled;
+open=t.enabled;
 
-.container {
-  max-width: 520px;
-  margin: auto;
-  padding: 25px 16px;
-}
+document.getElementById("mic").textContent=
+open?"🎙️ Mikrofon Açık":"🔇 Mikrofon Kapalı";
 
-h1 {
-  text-align: center;
-  font-size: 32px;
+document.getElementById("status").textContent=
+open?"🟢 Konuşabilirsin":"🔴 Mikrofon kapalı";
 }
-
-.subtitle {
-  text-align: center;
-  color: #aaa;
-  margin-bottom: 30px;
-}
-  
+</script>
+</body>
+</html>  
