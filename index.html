@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BlockVoice</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #101318;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 520px;
+  margin: auto;
+  padding: 25px 16px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 32px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #aaa;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: #1b2028;
+  border-radius: 18px;
+  padding: 20px;
+  text-align: center;
+}
+
+button {
+  width: 100%;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#micButton {
+  background: #e91e63;
+  color: white;
+}
+
+#micButton.active {
+  background: #16a34a;
+}
+
+.micText {
+  color: #aaa;
+  margin: 15px 0;
+}
+
+.title {
+  font-size: 20px;
+  margin: 20px 0 10px;
+}
+
+.players,
+.status {
+  padding: 12px;
+  background: #252b34;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+.status {
+  color: #aaa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🎙️ BlockVoice</h1>
+
+<div class="subtitle">
+Minecraft Bedrock Sesli Sohbet
+</div>
+
+<div class="card">
+
+<button id="micButton">
+🎤 Mikrofona izin ver
+</button>
+
+<div id="micText" class="micText">
+Mikrofon kapalı
+</div>
+
+<div class="title">
+👥 Oyuncular
+</div>
+
+<div class="players">
+🟢 Sen
+</div>
+
+<div id="status" class="status">
+Bağlantı bekleniyor...
+</div>
+
+</div>
+</div>
+
+<script>
+
+const micButton = document.getElementById("micButton");
+const micText = document.getElementById("micText");
+const status = document.getElementById("status");
+
+let stream = null;
+
+micButton.onclick = async function() {
+
+  try {
+
+    if (stream === null) {
+
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: true
+      });
+
+      micButton.textContent = "🔴 Mikrofonu kapat";
+      micButton.classList.add("active");
+
+      micText.textContent = "Mikrofon açık 🎙️";
+      status.textContent = "Mikrofon çalışıyor!";
+
+    } else {
+
+      stream.getTracks().forEach(function(track) {
+        track.stop();
+      });
+
+      stream = null;
+
+      micButton.textContent = "🎤 Mikrofona izin ver";
+      micButton.classList.remove("active");
+
+      micText.textContent = "Mikrofon kapalı";
+      status.textContent = "Mikrofon kapatıldı.";
+
+    }
+
+  } catch (error) {
+
+    status.textContent =
+      "Mikrofon izni verilmedi.";
+
+  }
+
+};
+
+</script>
+
+</body>
+</html>
