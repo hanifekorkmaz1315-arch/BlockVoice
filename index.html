@@ -421,7 +421,7 @@ async function toggleMicrophone() {
             button.classList.add("active");
 
             status.innerHTML =
-                "🟢 Konuşabilirsin";
+                "🗣️ Konuşabilirsin";
 
         }
 
@@ -787,7 +787,9 @@ function sesKapat() {
 }
 
 function sesPenceresi() {
-    const pencere = document.getElementById("sesPenceresi");
+    const pencere = document.getElementById("sesPencere");
+
+    if (!pencere) return;
 
     pencere.style.display =
         pencere.style.display === "block" ? "none" : "block";
