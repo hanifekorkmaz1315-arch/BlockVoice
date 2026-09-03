@@ -484,7 +484,64 @@ function leaveRoom() {
     document.getElementById("message")
         .textContent = "";
 }
+/* SES AYARLARI */
+const sesButonu = document.createElement("button");
+sesButonu.innerHTML = "🔊";
+sesButonu.style.cssText =
+"width:55px;height:55px;border-radius:50%;border:0;background:#30363d;color:white;font-size:25px;margin:12px auto;display:block;";
 
+document.getElementById("oda").appendChild(sesButonu);
+
+const sesPenceresi = document.createElement("div");
+sesPenceresi.style.cssText =
+"position:fixed;bottom:90px;left:50%;transform:translateX(-50%);width:180px;padding:15px;background:#161b22;border:1px solid #30363d;border-radius:22px;text-align:center;box-shadow:0 10px 35px #000;z-index:9999;display:none;";
+
+sesPenceresi.innerHTML = `
+<button id="sesAzalt" style="font-size:25px;border:0;border-radius:50%;padding:12px;background:#30363d;color:white">🔉</button>
+<button id="sesKapat" style="font-size:25px;border:0;border-radius:50%;padding:12px;background:#30363d;color:white">🔊</button>
+<button id="sesArtir" style="font-size:25px;border:0;border-radius:50%;padding:12px;background:#30363d;color:white">🔊</button>
+<div id="sesYuzde" style="color:white;font-size:18px;font-weight:bold;margin-top:10px">%100</div>
+`;
+
+document.body.appendChild(sesPenceresi);
+
+let sesSeviyesi = 100;
+let sesKapali = false;
+
+sesButonu.onclick = (e) => {
+  e.stopPropagation();
+  sesPenceresi.style.display =
+    sesPenceresi.style.display === "none" ? "block" : "none";
+};
+
+document.getElementById("sesArtir").onclick = () => {
+  sesSeviyesi = Math.min(100, sesSeviyesi + 10);
+  sesKapali = false;
+  sesGuncelle();
+};
+
+document.getElementById("sesAzalt").onclick = () => {
+  sesSeviyesi = Math.max(0, sesSeviyesi - 10);
+  sesGuncelle();
+};
+
+document.getElementById("sesKapat").onclick = () => {
+  sesKapali = !sesKapali;
+  sesGuncelle();
+};
+
+function sesGuncelle() {
+  const seviye = sesKapali ? 0 : sesSeviyesi;
+
+  document.getElementById("sesYuzde").textContent = "%" + seviye;
+
+  document.getElementById("sesKapat").textContent =
+    sesKapali ? "🔇" : "🔊";
+
+  document.querySelectorAll("audio").forEach(audio => {
+    audio.volume = seviye / 100;
+  });
+}
 </script>
 
 </body>
