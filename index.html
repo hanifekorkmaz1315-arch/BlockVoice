@@ -541,7 +541,116 @@ function sesGuncelle() {
   document.querySelectorAll("audio").forEach(audio => {
     audio.volume = seviye / 100;
   });
-}
+}/* 🔊 BLOCKVOICE SES AYARI */
+
+const sesAyarBtn = document.createElement("button");
+sesAyarBtn.innerHTML = "🔊";
+sesAyarBtn.id = "blockVoiceSesBtn";
+
+sesAyarBtn.style.cssText = `
+  width:55px;
+  height:55px;
+  border:0;
+  border-radius:50%;
+  background:#287cff;
+  color:white;
+  font-size:26px;
+  display:block;
+  margin:15px auto;
+`;
+
+document.getElementById("oda").appendChild(sesAyarBtn);
+
+const sesMenu = document.createElement("div");
+
+sesMenu.style.cssText = `
+  position:fixed;
+  left:50%;
+  bottom:90px;
+  transform:translateX(-50%);
+  width:190px;
+  padding:18px;
+  background:#151c32;
+  border:1px solid #394463;
+  border-radius:25px;
+  text-align:center;
+  z-index:99999;
+  box-shadow:0 10px 40px #000;
+  display:none;
+`;
+
+sesMenu.innerHTML = `
+  <div style="color:white;font-size:18px;font-weight:bold;margin-bottom:10px">
+    🔊 Ses
+  </div>
+
+  <button id="sesYukari"
+    style="width:55px;height:55px;border:0;border-radius:50%;font-size:25px;background:#303b5c;color:white">
+    🔊
+  </button>
+
+  <br>
+
+  <button id="sesMute"
+    style="width:65px;height:65px;border:0;border-radius:50%;font-size:28px;background:#287cff;color:white">
+    🔊
+  </button>
+
+  <br>
+
+  <button id="sesAsagi"
+    style="width:55px;height:55px;border:0;border-radius:50%;font-size:25px;background:#303b5c;color:white">
+    🔉
+  </button>
+
+  <div id="sesYuzde"
+    style="color:white;font-size:18px;font-weight:bold;margin-top:10px">
+    %100
+  </div>
+`;
+
+document.body.appendChild(sesMenu);
+
+let blockSes = 100;
+let blockMute = false;
+
+sesAyarBtn.onclick = function(e) {
+  e.stopPropagation();
+
+  sesMenu.style.display =
+    sesMenu.style.display === "none" ? "block" : "none";
+};
+
+document.getElementById("sesYukari").onclick = function() {
+  blockSes = Math.min(100, blockSes + 10);
+  blockMute = false;
+  sesGuncelle();
+};
+
+document.getElementById("sesAsagi").onclick = function() {
+  blockSes = Math.max(0, blockSes - 10);
+  sesGuncelle();
+};
+
+document.getElementById("sesMute").onclick = function() {
+  blockMute = !blockMute;
+  sesGuncelle();
+};
+
+function sesGuncelle() {
+
+  let ses = blockMute ? 0 : blockSes;
+
+  document.getElementById("sesYuzde").innerText =
+    "%" + ses;
+
+  document.getElementById("sesMute").innerText =
+    blockMute ? "🔇" : "🔊";
+
+  document.querySelectorAll("audio").forEach(function(audio) {
+    audio.volume = ses / 100;
+  });
+    }
 </script>
 
 </body>
