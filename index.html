@@ -753,21 +753,26 @@ function sesAzalt() {
 
 </style>
 
-<script>
 let blockSes = 100;
 let blockMute = false;
 
 function sesGuncelle() {
-  const ses = blockMute ? 0 : blockSes;
+    const ses = blockMute ? 0 : blockSes;
 
-  document.querySelectorAll("audio").forEach(audio => {
-    audio.volume = ses / 100;
-  });
+    document.querySelectorAll("audio").forEach(audio => {
+        audio.volume = ses / 100;
+    });
 
-  document.getElementById("sesYuzde").innerText = ses + "%";
+    const yuzde = document.getElementById("sesYuzde");
+    const mute = document.getElementById("sesMute");
 
-  document.getElementById("sesMute").innerText =
-    blockMute ? "🔇" : "🎤";
+    if (yuzde) {
+        yuzde.innerText = ses + "%";
+    }
+
+    if (mute) {
+        mute.innerText = blockMute ? "🔇" : "🎙️";
+    }
 }
 
 function sesArtir() {
