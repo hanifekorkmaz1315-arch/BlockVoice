@@ -650,7 +650,150 @@ function sesGuncelle() {
   document.querySelectorAll("audio").forEach(function(audio) {
     audio.volume = ses / 100;
   });
-    }
+    }/* SES AYARI */
+let blockSes = 100;
+let blockMute = false;
+
+function sesGuncelle() {
+    const ses = blockMute ? 0 : blockSes;
+
+    document.querySelectorAll("audio").forEach(audio => {
+        audio.volume = ses / 100;
+    });
+
+    document.getElementById("sesYuzde").innerText = ses + "%";
+    document.getElementById("sesMute").innerText =
+        blockMute ? "🔇" : "🔊";
+}
+
+function sesArtir() {
+    blockSes = Math.min(100, blockSes + 10);
+    blockMute = false;
+    sesGuncelle();
+}
+
+function sesAzalt() {
+    blockSes = Math.max(0, blockSes - 10);
+    sesGuncelle();
+}
+
+</script>
+              <!-- SES AYAR BUTONU -->
+<div id="sesAyarAlani">
+  <button id="sesAyarButonu" onclick="sesPenceresi()">🔊</button>
+
+  <div id="sesPenceresi">
+    <div class="sesBaslik">Ses Ayarı</div>
+
+    <button onclick="sesArtir()">🔊</button>
+
+    <div id="sesYuzde">100%</div>
+
+    <button onclick="sesAzalt()">🔉</button>
+
+    <button id="sesMute" onclick="sesKapat()">🎤</button>
+  </div>
+</div>
+
+<style>
+#sesAyarAlani {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9999;
+}
+
+#sesAyarButonu {
+  width: 58px;
+  height: 58px;
+  border: 0;
+  border-radius: 50%;
+  background: #287cff;
+  color: white;
+  font-size: 25px;
+}
+
+#sesPenceresi {
+  display: none;
+  position: absolute;
+  right: 0;
+  bottom: 70px;
+  width: 150px;
+  padding: 15px;
+  border-radius: 20px;
+  background: #202a47;
+  text-align: center;
+  box-shadow: 0 8px 30px #0008;
+}
+
+#sesPenceresi button {
+  width: 48px;
+  height: 48px;
+  margin: 6px;
+  border: 0;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+.sesBaslik {
+  color: white;
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+#sesYuzde {
+  color: white;
+  font-size: 18px;
+  margin: 5px;
+}
+
+#sesMute {
+  background: #344263;
+}
+
+</style>
+
+<script>
+let blockSes = 100;
+let blockMute = false;
+
+function sesGuncelle() {
+  const ses = blockMute ? 0 : blockSes;
+
+  document.querySelectorAll("audio").forEach(audio => {
+    audio.volume = ses / 100;
+  });
+
+  document.getElementById("sesYuzde").innerText = ses + "%";
+
+  document.getElementById("sesMute").innerText =
+    blockMute ? "🔇" : "🎤";
+}
+
+function sesArtir() {
+    blockSes = Math.min(100, blockSes + 10);
+    blockMute = false;
+    sesGuncelle();
+}
+
+function sesAzalt() {
+    blockSes = Math.max(0, blockSes - 10);
+    sesGuncelle();
+}
+
+function sesKapat() {
+    blockMute = !blockMute;
+    sesGuncelle();
+}
+
+function sesPenceresi() {
+    const pencere = document.getElementById("sesPenceresi");
+
+    pencere.style.display =
+        pencere.style.display === "block" ? "none" : "block";
+}
+
+sesGuncelle();
 </script>
 
 </body>
